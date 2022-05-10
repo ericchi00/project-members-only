@@ -7,14 +7,13 @@ import path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
 import helmet from 'helmet';
-import session from 'express-session';
-import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import __dirname from './dirname.js';
 
 import indexRouter from './routes/index.js';
 import signupRouter from './routes/register.js';
 import loginRouter from './routes/login.js';
+import logoutRouter from './routes/logout.js';
 
 const app = express();
 
@@ -25,10 +24,6 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-app.use(session({ secret: 'cat', resave: false, saveUninitialized: true }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -47,6 +42,7 @@ app.use(compression());
 app.use('/', indexRouter);
 app.use('/register', signupRouter);
 app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
