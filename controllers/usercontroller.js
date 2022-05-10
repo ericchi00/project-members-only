@@ -1,5 +1,6 @@
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
+import passport from 'passport';
 import User from '../models/user.js';
 
 const registerPost = [
@@ -9,39 +10,46 @@ const registerPost = [
 		.escape()
 		.withMessage('Username must be at least 4 characters')
 		.isAlphanumeric()
-		.withMessage('Username has non-alphanumeric characters.'),
+		.withMessage('Username has non-alphanumeric characters.')
+		.custom((value) =>
+			User.exists({ username: value }).then((user) => {
+				if (user) {
+					return Promise.reject(new Error('Username already taken.'));
+				}
+				return true;
+			})
+		),
 	body('password')
 		.isLength({ min: 5 })
 		.withMessage('Password must be at least 5 charaacters'),
+	body('confirmPassword').custom((value, { req }) => {
+		if (value !== req.body.password) {
+			throw new Error('Passwords must match.');
+		} else return true;
+	}),
 
-	(req, res, next) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			res.render('register', {
-				title: 'Register',
-				user: req.body,
-				errors: errors.array(),
-			});
-		} else {
-			const hashPass = bcrypt.hash(
-				req.body.password,
-				10,
-				(error, hashedPassword) => {
+	async (req, res, next) => {
+		try {
+			const errors = validationResult(req);
+			if (!errors.isEmpty()) {
+				res.render('register', {
+					title: 'Register',
+					user: req.body,
+					errors: errors.array(),
+				});
+			} else {
+				bcrypt.hash(req.body.password, 10, (error, hashedPassword) => {
 					if (error) return next(error);
-					return hashedPassword;
-				}
-			);
-			const user = new User({
-				username: req.body.username,
-				password: hashPass(),
-			});
-			user.save((error) => {
-				if (error) {
-					return next(error);
-				}
-				res.redirect('/');
-			});
+					const user = new User({
+						username: req.body.username,
+						password: hashedPassword,
+					});
+					user.save();
+					res.redirect('/');
+				});
+			}
+		} catch (error) {
+			next(error);
 		}
 	},
 ];
