@@ -7,8 +7,13 @@ import path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
 import helmet from 'helmet';
-import LocalStrategy from 'passport-local';
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import bcrypt from 'bcryptjs';
+import session from 'express-session';
 import __dirname from './dirname.js';
+
+import User from './models/user.js';
 
 import indexRouter from './routes/index.js';
 import signupRouter from './routes/register.js';
@@ -27,9 +32,51 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
+app.use(
+	session({
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: true,
+	})
+);
+passport.use(
+	new LocalStrategy((username, password, done) => {
+		User.findOne({ username }, (err, user) => {
+			if (err) {
+				return done(err);
+			}
+			if (!user) {
+				return done(null, false, { message: 'Incorrect username or password' });
+			}
+			bcrypt.compare(password, user.password, (err, res) => {
+				if (res) {
+					return done(null, user);
+				}
+				return done(null, false, { message: 'Incorrect username or password' });
+			});
+		});
+	})
+);
+passport.serializeUser((user, done) => {
+	done(null, user.id);
+});
+passport.deserializeUser((id, done) => {
+	User.findById(id, (err, user) => {
+		done(err, user);
+	});
+});
+
+// locals object
+app.use((req, res, next) => {
+	res.locals.currentUser = req.user;
+	next();
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
@@ -61,3 +108,5 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
+
+// figure out why passport local strategy isn't working,
