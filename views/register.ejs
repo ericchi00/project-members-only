@@ -22,65 +22,57 @@
             </div>
         </div>
     </nav>
-    <div class="container-fluid w-75 p-3" style="max-width: 800px;">
-        <section class="text-center">
-            <div class="card mx-4 mx-md-5 shadow-5-strong" style="
-            backdrop-filter: blur(30px);
-            border-radius: 1rem;
-            ">
-                <div class="card-body py-5 px-md-5">
+    <section class="vh-100" style="background-color: hsl(0, 0%, 96%);">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card shadow-2-strong" style="border-radius: 1rem;">
 
-                    <div class="row d-flex justify-content-center">
-                        <div class="col-lg-8">
-                            <% if (locals.message) {%>
-                                <p style="color: rgb(91, 228, 91);">
-                                    <%= locals.message %>
-                                </p>
-                                <a class="btn btn-success" href="/" role="button">Homepage</a>
-                                <%}%>
-                                    <h2 class="fw-bold mb-5">Registration Form</h2>
-                                    <form method="post" action="/register">
+                        <% if (locals.message) {%>
+                            <p style="color: rgb(91, 228, 91);">
+                                <%= locals.message %>
+                            </p>
+                            <a class="btn btn-success" href="/login" role="button">Login</a>
+                            <%}%>
+
+                                <form method="POST" action="/register">
+                                    <div class="card-body p-5 text-center">
+                                        <h3 class="mb-5">Register</h3>
+
                                         <div class="form-outline mb-4">
-                                            <div class="form-outline">
-                                                <input type="text" id="username" class="form-control" name="username"
-                                                    minlength="4" required />
-                                                <label class="form-label" for="username">username</label>
-                                            </div>
-                                        </div>
-                                        <!-- Password input -->
-                                        <div class="form-outline mb-4">
-                                            <input type="password" id="password" class="form-control" name="password"
-                                                minlength="5" required />
-                                            <label class="form-label" for="password">Password</label>
+                                            <input type="text" id="typeEmailX-2" class="form-control form-control-lg"
+                                                name="username" />
+                                            <label class="form-label" for="typeEmailX-2">username</label>
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input type="password" id="confirmPassword" class="form-control"
-                                                name="confirmPassword" minlength="5" required />
-                                            <label class="form-label" for="confirmPassword">Confirm Password</label>
+                                            <input type="password" id="typePasswordX-2"
+                                                class="form-control form-control-lg" name="password" />
+                                            <label class="form-label" for="typePasswordX-2">password</label>
                                         </div>
 
-                                        <!-- Submit button -->
-                                        <button type="submit" class="btn btn-primary btn-block mb-4">
-                                            Register
-                                        </button>
-                                        <% if (locals.errors) { %>
-                                            <ul class="list-group">
-                                                <% locals.errors.forEach((error)=> { %>
-                                                    <li class="list-group-item" style="color: red;">
-                                                        <%= error.msg %>
-                                                    </li>
-                                                    <%})%>
-                                            </ul>
-                                            <%}%>
-                                    </form>
+                                        <div class="form-outline mb-4">
+                                            <input type="password" id="typePasswordX-2"
+                                                class="form-control form-control-lg" name="confirmPassword" />
+                                            <label class="form-label" for="confirmPassword">confirm password</label>
+                                        </div>
 
-                        </div>
+                                        <button class="btn btn-primary btn-block mb-4" type="submit">Login</button>
+                                    </div>
+                                    <% if (locals.errors) { %>
+                                        <ul class="list-group">
+                                            <% locals.errors.forEach((error)=> { %>
+                                                <li class="list-group-item" style="color: red;">
+                                                    <%= error.msg %>
+                                                </li>
+                                                <%})%>
+                                        </ul>
+                                        <%}%>
+                                </form>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
+    </section>
     <% if (locals.timeout) { %>
         <script>
             setTimeout(() => {
