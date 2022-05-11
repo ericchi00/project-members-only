@@ -1,6 +1,5 @@
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
-import passport from 'passport';
 import User from '../models/user.js';
 
 const registerPost = [
@@ -45,10 +44,9 @@ const registerPost = [
 						password: hashedPassword,
 					});
 					user.save();
-					res.render('register', {
-						message:
-							'Registration successful. Redirecting to login page. Click here if page does not redirect.',
-						timeout: true,
+					res.render('login', {
+						title: 'Login Form',
+						success: 'Register successful. Please login.',
 					});
 				});
 			}
