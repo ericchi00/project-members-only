@@ -19,6 +19,8 @@ import indexRouter from './routes/index.js';
 import signupRouter from './routes/register.js';
 import loginRouter from './routes/login.js';
 import logoutRouter from './routes/logout.js';
+import membershipRouter from './routes/membership.js';
+import adminRouter from './routes/admin.js';
 
 const app = express();
 
@@ -42,23 +44,31 @@ app.use(
 		maxAge: 24 * 60 * 60 * 1000,
 	})
 );
+
 passport.use(
-	new LocalStrategy((username, password, done) => {
-		User.findOne({ username }, (err, user) => {
-			if (err) {
-				return done(err);
-			}
-			if (!user) {
-				return done(null, false, { message: 'Incorrect username or password' });
-			}
-			bcrypt.compare(password, user.password, (err, res) => {
-				if (res) {
-					return done(null, user);
+	new LocalStrategy(
+		{ passReqToCallback: true },
+		(req, username, password, done) => {
+			User.findOne({ username }, (err, user) => {
+				if (err) {
+					return done(err);
 				}
-				return done(null, false, { message: 'Incorrect username or password' });
+				if (!user) {
+					return done(null, false, {
+						message: 'Incorrect username or password',
+					});
+				}
+				bcrypt.compare(password, user.password, (err, res) => {
+					if (res) {
+						return done(null, user);
+					}
+					return done(null, false, {
+						message: 'Incorrect username or password',
+					});
+				});
 			});
-		});
-	})
+		}
+	)
 );
 passport.serializeUser((user, done) => {
 	done(null, user.id);
@@ -69,16 +79,16 @@ passport.deserializeUser((id, done) => {
 	});
 });
 
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
 // locals object
 app.use((req, res, next) => {
 	res.locals.currentUser = req.user;
 	next();
 });
-
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
 	helmet({
@@ -86,11 +96,12 @@ app.use(
 	})
 );
 app.use(compression());
-
 app.use('/', indexRouter);
 app.use('/register', signupRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
+app.use('/membership', membershipRouter);
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
