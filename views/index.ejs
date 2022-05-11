@@ -14,8 +14,8 @@
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Only Memers</a>
       <div class="d-flex justify-content-end align-items-center" style="gap: .5rem;">
-        <% if (locals.user.username) {%>
-          <h5>Welcome back <%= locals.user.username %>!
+        <% if (user) {%>
+          <h5>Welcome back <%= user.username %>!
           </h5>
           <a href="/logout" class="btn btn-dark" role="button">Logout</a>
           <%} else {%>
