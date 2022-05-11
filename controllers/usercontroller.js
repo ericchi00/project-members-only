@@ -45,7 +45,11 @@ const registerPost = [
 						password: hashedPassword,
 					});
 					user.save();
-					res.redirect('/');
+					res.render('register', {
+						message:
+							'Registration successful. Redirecting to login page. Click here if page does not redirect.',
+						timeout: true,
+					});
 				});
 			}
 		} catch (error) {
