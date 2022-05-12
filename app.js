@@ -46,29 +46,28 @@ app.use(
 );
 
 passport.use(
-	new LocalStrategy(
-		{ passReqToCallback: true },
-		(req, username, password, done) => {
-			User.findOne({ username }, (err, user) => {
-				if (err) {
-					return done(err);
-				}
-				if (!user) {
-					return done(null, false, {
-						message: 'Incorrect username or password',
-					});
-				}
-				bcrypt.compare(password, user.password, (err, res) => {
-					if (res) {
-						return done(null, user);
-					}
-					return done(null, false, {
-						message: 'Incorrect username or password',
-					});
+	new LocalStrategy((username, password, done) => {
+		User.findOne({ username: username.trim() }, async (error, user) => {
+			if (error) {
+				return done(error);
+			}
+			if (!user) {
+				return done(null, false, {
+					message: 'Incorrect username or password',
 				});
-			});
-		}
-	)
+			}
+			try {
+				if (await bcrypt.compare(password, user.password)) {
+					return done(null, user);
+				}
+				return done(null, false, {
+					message: 'Incorrect username or password',
+				});
+			} catch (err) {
+				return done(err);
+			}
+		});
+	})
 );
 passport.serializeUser((user, done) => {
 	done(null, user.id);
@@ -87,6 +86,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // locals object
 app.use((req, res, next) => {
 	res.locals.currentUser = req.user;
+	res.locals.error = req.session.messages;
 	next();
 });
 
