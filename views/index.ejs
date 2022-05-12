@@ -31,6 +31,64 @@
       </div>
     </div>
   </nav>
+  <div class="container">
+    <% if (user) { %>
+      <div class="container-fluid" style="max-width: 800px; padding-bottom: 5rem;">
+        <form method="post" action="/">
+          <div class="mb-2">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" minlength="1" name="title" />
+          </div>
+          <div class="mb-2">
+            <label for="text" class="form-label">Message</label>
+            <textarea class="form-control" id="text" minlength="1" required name="text"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="float: right;">Submit</button>
+          <% if (locals.errors) { %>
+            <ul class="list-group">
+              <% locals.errors.forEach((error)=> { %>
+                <li class="list-group-item" style="color: red;">
+                  <%= error.msg %>
+                </li>
+                <%})%>
+            </ul>
+            <%}%>
+        </form>
+      </div>
+      <%} %>
+        <div class="container-fluid" style="max-width: 800px; margin-top: 1rem;">
+          <% if (locals.messages) {%>
+            <% locals.messages.forEach((item)=> { %>
+              <div class="card mb-3">
+                <div class="card-title" style="padding: .5rem;">
+                  <%= item.title %>
+                </div>
+                <p class="card-text" style="padding: .5rem;">
+                  <%= item.message %>
+                </p>
+                <div class="card-subtitle" style="margin-left: auto; padding-right: .5rem; padding-bottom: .5rem;">
+                  <% if (user) { %>
+                    <% if (user.admin || user.member) {%>
+                      user: <%= item.username.username %>
+                        <%}%>
+                          <%} else { %>
+                            only members & admins can see who posted
+                            <%}%>
+                </div>
+                <div class="card-subtitle" style="margin-left: auto; padding-right: .5rem; padding-bottom: .5rem;">
+                  <%= item.formatDate %>
+                    <% if (user) { %>
+                      <% if (user.admin && (item.username._id.equals(user._id))) { %>
+                        <a href="/delete/<%= item._id %>" role="button" class="btn btn-warning btn-sm card-subtitle"
+                          style="margin-left: auto; padding-right: .5rem; padding-bottom: .5rem;">Delete</a>
+                        <%}%>
+                          <%} %>
+                </div>
+              </div>
+              <%})%>
+                <%}%>
+        </div>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
     crossorigin="anonymous"></script>
