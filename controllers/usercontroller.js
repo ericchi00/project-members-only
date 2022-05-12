@@ -56,4 +56,68 @@ const registerPost = [
 	},
 ];
 
-export { registerPost };
+const membershipPost = [
+	body('membership')
+		.trim()
+		.escape()
+		.custom((value) => {
+			if (value !== 'ilikecats') {
+				throw new Error("That's not the correct secret password.");
+			} else return true;
+		}),
+	async (req, res, next) => {
+		try {
+			const errors = validationResult(req);
+			if (!errors.isEmpty()) {
+				res.render('membership', {
+					user: res.locals.currentUser,
+					errors: errors.array(),
+				});
+			} else {
+				await User.findByIdAndUpdate(req.user._id, {
+					member: true,
+				}).exec();
+				res.render('membership', {
+					user: res.locals.currentUser,
+					success: 'You can now view who posted the messages.',
+				});
+			}
+		} catch (error) {
+			next(error);
+		}
+	},
+];
+
+const adminPost = [
+	body('admin')
+		.trim()
+		.escape()
+		.custom((value) => {
+			if (value !== 'catsarecool') {
+				throw new Error("That's not the correct secret password.");
+			} else return true;
+		}),
+	async (req, res, next) => {
+		try {
+			const errors = validationResult(req);
+			if (!errors.isEmpty()) {
+				res.render('admin', {
+					user: res.locals.currentUser,
+					errors: errors.array(),
+				});
+			} else {
+				await User.findByIdAndUpdate(req.user._id, {
+					admin: true,
+				}).exec();
+				res.render('admin', {
+					user: res.locals.currentUser,
+					success: 'You can now delete your own posts.',
+				});
+			}
+		} catch (error) {
+			next(error);
+		}
+	},
+];
+
+export { registerPost, membershipPost, adminPost };
