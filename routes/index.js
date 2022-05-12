@@ -1,13 +1,10 @@
 import express from 'express';
+import { messageList, messagePost } from '../controllers/messagecontroller.js';
 
 const router = express.Router();
 
-/* GET index page. */
-router.get('/', (req, res) => {
-	res.render('index', {
-		title: 'Only Memers',
-		user: req.user,
-	});
-});
+router.get('/', messageList);
+
+router.post('/', messagePost);
 
 export default router;
