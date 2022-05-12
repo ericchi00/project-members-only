@@ -49,4 +49,13 @@ const messagePost = [
 	},
 ];
 
-export { messagePost, messageList };
+const deleteMessege = async (req, res, next) => {
+	try {
+		await Message.findByIdAndDelete(req.params.id).exec();
+		res.redirect('/');
+	} catch (error) {
+		next(error);
+	}
+};
+
+export { messagePost, messageList, deleteMessege };
