@@ -11,6 +11,7 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcryptjs';
 import session from 'express-session';
+import flash from 'connect-flash';
 import __dirname from './dirname.js';
 
 import User from './models/user.js';
@@ -45,29 +46,34 @@ app.use(
 	})
 );
 
+app.use(flash());
+
 passport.use(
-	new LocalStrategy((username, password, done) => {
-		User.findOne({ username: username.trim() }, async (error, user) => {
-			if (error) {
-				return done(error);
-			}
-			if (!user) {
-				return done(null, false, {
-					message: 'Incorrect username or password',
-				});
-			}
-			try {
-				if (await bcrypt.compare(password, user.password)) {
-					return done(null, user);
+	new LocalStrategy(
+		{ passReqToCallback: true },
+		(req, username, password, done) => {
+			User.findOne({ username: username.trim() }, async (error, user) => {
+				if (error) {
+					return done(error);
 				}
-				return done(null, false, {
-					message: 'Incorrect username or password',
-				});
-			} catch (err) {
-				return done(err);
-			}
-		});
-	})
+				if (!user) {
+					return done(null, false, {
+						message: 'Incorrect username or password',
+					});
+				}
+				try {
+					if (await bcrypt.compare(password, user.password)) {
+						return done(null, user);
+					}
+					return done(null, false, {
+						message: 'Incorrect username or password',
+					});
+				} catch (err) {
+					return done(err);
+				}
+			});
+		}
+	)
 );
 passport.serializeUser((user, done) => {
 	done(null, user.id);
@@ -85,8 +91,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // locals object
 app.use((req, res, next) => {
+	res.locals.loginFail = req.flash('error');
 	res.locals.currentUser = req.user;
-	res.locals.error = req.session.messages;
 	next();
 });
 
@@ -120,5 +126,3 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
-
-// figure out why passport local strategy isn't working,

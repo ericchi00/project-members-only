@@ -52,10 +52,10 @@
 
                                         <button class="btn btn-primary btn-block mb-4" type="submit">Login</button>
                             </div>
-                            <% if (locals.message) { %>
+                            <% if (loginFail && loginFail.length> 0) { %>
                                 <ul class="list-group">
                                     <li class="list-group-item" style="color: red;">
-                                        <%= locals.message %>
+                                        <%= loginFail %>
                                     </li>
                                 </ul>
                                 <%}%>
