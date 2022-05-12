@@ -7,3 +7,7 @@ Messaging board to ractice using passport & bcrypt for securing login/passwords 
 ## Technology
 
 HTML, CSS, Bootstrap, NodeJS, Express, Date-fns (date formatting), Connect-Flash (display flash messages)
+
+member pass: ilikecats
+
+admin pass: catsarecool
