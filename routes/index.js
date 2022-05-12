@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-	deleteMessegePost,
+	deleteMessege,
 	messageList,
 	messagePost,
 } from '../controllers/messagecontroller.js';
@@ -11,6 +11,6 @@ router.get('/', messageList);
 
 router.post('/', messagePost);
 
-router.get('/delete/:id', deleteMessegePost);
+router.get('/delete/:id', deleteMessege);
 
 export default router;
