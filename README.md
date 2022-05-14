@@ -6,7 +6,7 @@ Messaging board to practice using passport & bcrypt for securing login/passwords
 
 ## Technology
 
-HTML, CSS, Bootstrap, NodeJS, Express, Date-fns (date formatting), Connect-Flash (display flash messages), Mongoose, MongoDB
+HTML, CSS, Bootstrap (styling) , NodeJS, Express, Date-fns (date formatting), Connect-Flash (display flash messages), Mongoose, MongoDB
 
 to see usernames : member pass: ilikecats
 
