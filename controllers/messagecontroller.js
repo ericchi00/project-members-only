@@ -9,7 +9,7 @@ const messageList = async (req, res, next) => {
 			.sort([['timestamp', 'descending']])
 			.exec();
 		res.render('index', {
-			title: 'Only Members',
+			title: 'Memers Only',
 			user: res.locals.currentUser,
 			messages,
 		});
@@ -19,18 +19,13 @@ const messageList = async (req, res, next) => {
 };
 
 const messagePost = [
-	body('title')
-		.trim()
-		.isLength({ min: 1 })
-		.escape()
-		.withMessage("Title can't be empty"),
 	body('text').isLength({ min: 1 }).escape().withMessage("Text can't be empty"),
 	async (req, res, next) => {
 		try {
 			const errors = validationResult(req);
 			if (!errors.isEmpty()) {
 				res.render('index', {
-					title: 'Only Memers',
+					title: 'Members Only',
 					user: res.locals.currentUser,
 					errors: errors.array(),
 				});

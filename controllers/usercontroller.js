@@ -77,10 +77,7 @@ const membershipPost = [
 				await User.findByIdAndUpdate(req.user._id, {
 					member: true,
 				}).exec();
-				res.render('membership', {
-					user: res.locals.currentUser,
-					success: 'You can now view who posted the messages.',
-				});
+				res.redirect('/');
 			}
 		} catch (error) {
 			next(error);
@@ -109,10 +106,7 @@ const adminPost = [
 				await User.findByIdAndUpdate(req.user._id, {
 					admin: true,
 				}).exec();
-				res.render('admin', {
-					user: res.locals.currentUser,
-					success: 'You can now delete your own posts.',
-				});
+				res.redirect('/');
 			}
 		} catch (error) {
 			next(error);
