@@ -12,4 +12,4 @@ to see usernames : member pass: ilikecats
 
 to delete posts : admin pass: catsarecool
 
-[Live Demo](https://fierce-ravine-43934.herokuapp.com)
+[Live Demo](https://only-memers.herokuapp.com/)
