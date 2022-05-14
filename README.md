@@ -2,14 +2,14 @@
 
 https://www.theodinproject.com/lessons/nodejs-members-only
 
-Messaging board to ractice using passport & bcrypt for securing login/passwords & also practice conditional rendering
+Messaging board to practice using passport & bcrypt for securing login/passwords & also practice conditional rendering (EJS). 
 
 ## Technology
 
-HTML, CSS, Bootstrap, NodeJS, Express, Date-fns (date formatting), Connect-Flash (display flash messages)
+HTML, CSS, Bootstrap, NodeJS, Express, Date-fns (date formatting), Connect-Flash (display flash messages), Mongoose, MongoDB
 
-member pass: ilikecats
+to see usernames : member pass: ilikecats
 
-admin pass: catsarecool
+to delete posts : admin pass: catsarecool
 
 [Live Demo](https://fierce-ravine-43934.herokuapp.com)
